@@ -85,13 +85,13 @@ gaussian_filter <- function(img, sig){
   return(smoothed)
 }
 
-img <- get_img(ciphers_processed[500,3:531])
-smt_img <- gaussian_filter(img, 1.3)
+img <- get_img(ciphers_processed[1001,3:531])
+smt_img <- gaussian_filter(img, 1.2)
 
 image(img, axes=FALSE, col=gray.colors(10), useRaster=TRUE)
-title_string = "Original image"
-title(main=glue(title_string), col.main="blue", font.main=15)
+title_string = "Before Gaussian smoothing"
+title(main=glue(title_string), col.main="Black", font.main=25)
 
 image(smt_img, axes=FALSE, col=gray.colors(10), useRaster=TRUE)
-title_string = "After applying Gaussian smoothing"
-title(main=glue(title_string), col.main="blue", font.main=25)
+title_string = "After Gaussian smoothing"
+title(main=glue(title_string), col.main="Black", font.main=25)
