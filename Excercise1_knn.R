@@ -62,12 +62,8 @@ plot(Ks,type = "o")
 
 
 # cross validation
-install.packages("tidyverse")
-install.packages("ggplot2", type="source",dependencies = TRUE)
 install.packages("ggplot2")
-install.packages("scales")
 install.packages('caret')
-library(tidyverse)
 library(ggplot2)
 library(caret)
 
@@ -75,12 +71,12 @@ library(caret)
 #10% testing rest is training => the 10% slide over the data (so 10 runs in total)
 accs <- c(1:10)
 runtimes <- c(1:10)
-folds <- createFolds(id$X1, k=10)
+folds <- createFolds(1:2000, k=10)
 for (i in 1:10) {
-  train_split <- id[-folds[[i]], -1]
-  test_split <- id[folds[[i]],-1]
-  train_classes <- id[-folds[[i]], 1]
-  test_classes <- id[folds[[i]],1]
+  train_split <- ciphers_shuffle[-folds[[i]], -1]
+  test_split <- ciphers_shuffle[folds[[i]], -1]
+  train_classes <- train_split[, 1]
+  test_classes <- test_split[, 1]
   
   ret <- run_knn(train_split, test_split, train_classes, k=3)
   accs[i] = ret$Accuracy
