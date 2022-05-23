@@ -8,7 +8,7 @@ library(gmodels)
 #1.4.1
 # Data shuffle
 set.seed(423)
-ciphers_shuffle <- ciphers[sample(nrow(ciphers[6000:8000,])),]
+ciphers_shuffle <- ciphers[sample(nrow(ciphers[6001:8000,])),]
 
 dim(ciphers_shuffle)
 # Data splittting
@@ -24,7 +24,7 @@ test_labels <- test[,2]
 
 
 accuracy <- function(x){sum(diag(x)/(sum(rowSums(x)))) * 100}
-run_knn <- function(train, test, train_labels, k){
+run_knn <- function(train, test, train_labels, test_labels, k){
   start_time <- Sys.time()
   test_prediction <- knn(train,test,cl=train_labels,k)
   end_time <- Sys.time()
@@ -37,9 +37,9 @@ run_knn <- function(train, test, train_labels, k){
   return(df)
 }
 
-run_knn(train, test, train_labels, 3)
+run_knn(train, test, train_labels, test_labels, 3)
 
-run_knn(train, test, train_labels, 1)
+run_knn(train, test, train_labels, test_labels, 1)
 
 # 1.4.2
 accs = c()
@@ -62,9 +62,7 @@ plot(Ks,type = "o")
 
 
 # cross validation
-install.packages("ggplot2")
 install.packages('caret')
-library(ggplot2)
 library(caret)
 
 # 1.4.3: cross validation
@@ -75,13 +73,15 @@ folds <- createFolds(1:2000, k=10)
 for (i in 1:10) {
   train_split <- ciphers_shuffle[-folds[[i]], -1]
   test_split <- ciphers_shuffle[folds[[i]], -1]
-  train_classes <- train_split[, 1]
-  test_classes <- test_split[, 1]
+  train_classes <- ciphers_shuffle[-folds[[i]], 2]
+  test_classes <- ciphers_shuffle[folds[[i]], 2]
   
-  ret <- run_knn(train_split, test_split, train_classes, k=3)
+  ret <- run_knn(train_split, test_split, train_classes, test_classes, k=1)
   accs[i] = ret$Accuracy
   runtimes[i] = ret$Runtime
 }
+confusion_matrix
+
 print(runtimes)
 print(accs)
 mean(accs)
